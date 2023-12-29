@@ -1,55 +1,3 @@
-
-El código de socket.io que debería ir en tu plantilla es el siguiente:
-
-HTML
-<script>
-  // ... tu código de socket.io original
-
-  socket.on("products", (products) => {
-    // Actualizar la vista con los productos paginados
-    const paginatedProducts = paginate(products, {
-      perPage: 10, // Número de productos por página
-      page: req.query.page, // Página actual (obtenida de la URL)
-    });
-
-    // Enviar los productos paginados al cliente
-    socket.emit("products", paginatedProducts);
-  });
-</script>
-Utiliza el código con precaución. Más información
-Este código actualiza la vista con los productos paginados cada vez que se recibe un evento products de socket.io. Para ello, utiliza el método paginate() para paginar los productos y luego envía los productos paginados al cliente mediante el evento products.
-
-Si estás utilizando Typescript, puedes añadir los siguientes tipos a tu plantilla:
-
-HTML
-<script>
-  // ... tu código de socket.io original
-
-  interface Products {
-    id: string;
-    name: string;
-    price: number;
-  }
-
-  interface PaginatedProducts {
-    total: number;
-    perPage: number;
-    currentPage: number;
-    lastPage: number;
-    data: Products[];
-  }
-
-  socket.on("products", (products: PaginatedProducts) => {
-    // Actualizar la vista con los productos paginados
-    // ...
-  });
-</script>
-Utiliza el código con precaución. Más información
-Estos tipos te ayudarán a garantizar que los datos que se envían al cliente son del tipo correcto.
-
-Por ejemplo, puedes utilizar el helper each para recorrer los productos paginados de la siguiente manera:
-
-HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,3 +34,4 @@ HTML
   </script>
 </body>
 </html>
+

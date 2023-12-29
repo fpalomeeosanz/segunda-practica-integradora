@@ -1,11 +1,8 @@
 import { Router } from "express";
 import { CartManagerDB } from "../dao/dbManagers/cartManagerDB.js";
 
-
-
 const router = Router();
 const cartManagerMongo = new CartManagerDB();
-
 
 //GET
 router.get(`/`, async (req,res) =>{

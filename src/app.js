@@ -1,11 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-
+import socket from "socket.io"
 
 import __dirname from "./utils.js";
 
 import userRoutes from "./routes/users.routes.js";
-import { viewRoutes } from "./routes/views.routes.js";
+import { viewRouter } from "./routes/views.routes.js";
 import { cartRouter } from "./routes/cart.routes.js";
 import { productRouter } from "./routes/product.routes.js";
 
@@ -21,21 +21,23 @@ app.use(express.urlencoded({extended:true}));
 const httpServer = app.listen(PORT, () =>{
     console.log(`Servidor funcionado en el puerto:${PORT}`);
 })
+
  
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 app.use(express.static(`${__dirname}/public`));
 
+const io = socket(server);
 
-socketServer.on("conetcion", (socket) => {
+socketServer.on("connection", (io) => {
     console.log("Nuevo cliente conectado")
 })
 
 socket.broadcast.emit();
 socket.emit();
 
-app.use("/", viewRoutes);
+app.use("/", viewRouter);
 app.use("/api/users", userRoutes);
 app.use("api/carts", cartRouter);
 app.use("api/products", productRouter);
