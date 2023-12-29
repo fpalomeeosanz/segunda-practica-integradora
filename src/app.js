@@ -1,11 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import { engine } from "express-handlebars";
+
 
 import __dirname from "./utils.js";
 
 import userRoutes from "./routes/users.routes.js";
-import viewRoutes from "./routes/views.router.js";
+import { viewRoutes } from "./routes/views.routes.js";
 import { cartRouter } from "./routes/cart.routes.js";
 import { productRouter } from "./routes/product.routes.js";
 
@@ -22,13 +22,21 @@ const httpServer = app.listen(PORT, () =>{
     console.log(`Servidor funcionado en el puerto:${PORT}`);
 })
  
-app.engine("handlebars", engine());
+app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 app.use(express.static(`${__dirname}/public`));
 
 
-app.use("/api/users", userRoutes);
+socketServer.on("conetcion", (socket) => {
+    console.log("Nuevo cliente conectado")
+})
+
+socket.broadcast.emit();
+socket.emit();
+
 app.use("/", viewRoutes);
+app.use("/api/users", userRoutes);
 app.use("api/carts", cartRouter);
 app.use("api/products", productRouter);
+

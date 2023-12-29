@@ -14,7 +14,7 @@ router.get("/usuarios", async (req,res) => {
     res.render("users", {users, isAdmin: true})
 })
 
-export default router;
+export {router as viewRouter}
 
 
 
