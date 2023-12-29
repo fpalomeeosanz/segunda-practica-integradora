@@ -5,7 +5,7 @@ import { uploader } from "../utils.js";
 const router = Router();
 
 //get general
-router.get("/", async (res,res) =>{
+router.get("/", async (req,res) =>{
     
     const users = await userModel.find();
 
@@ -15,7 +15,7 @@ router.get("/", async (res,res) =>{
     })
 })
 //get individual
-router.get("/:uid", async (res,res) =>{
+router.get("/:uid", async (req,res) =>{
 
     const id = req.params.uid;
     const user = await userModel.find({_id:id});
@@ -26,7 +26,7 @@ router.get("/:uid", async (res,res) =>{
     })
 })
 //creacion
-router.post("/", uploader.single("thumbnail") ,async (res,res) =>{
+router.post("/", uploader.single("thumbnail") ,async (req,res) =>{
     
     const {firts_name, last_name, email} = req.body;
 
@@ -54,7 +54,7 @@ router.post("/", uploader.single("thumbnail") ,async (res,res) =>{
     })
 })
 //actualizacion por cambiar...
-router.put("/:uid", async (res,res) =>{
+router.put("/:uid", async (req,res) =>{
     
     const id = req.params.uid;
 
@@ -75,7 +75,7 @@ router.put("/:uid", async (res,res) =>{
     })
 })
 //eliminacion
-router.delete("/:uid", async (res,res) =>{
+router.delete("/:uid", async (req,res) =>{
     
     const id = req.params.uid;
     const result = await userModel.deleteOne({_id:id})

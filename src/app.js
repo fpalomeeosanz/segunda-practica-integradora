@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import socket from "socket.io"
+import handlebars  from "express-handlebars";
 
 import __dirname from "./utils.js";
 
@@ -28,14 +28,7 @@ app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 app.use(express.static(`${__dirname}/public`));
 
-const io = socket(server);
 
-socketServer.on("connection", (io) => {
-    console.log("Nuevo cliente conectado")
-})
-
-socket.broadcast.emit();
-socket.emit();
 
 app.use("/", viewRouter);
 app.use("/api/users", userRoutes);

@@ -1,15 +1,10 @@
-const socket = io();
+const socket = io(server);
 
-socket.emit("message", "hola! es una prueba de cocnexion desde un websocket");
+socket.on("connection", (clientSocket) => {
 
-socket.on("evento_para_socket_individual", data => {
-    console.log(data);
-});
+    console.log("Nuevo cliente conectado");
 
-socket.on("evento_para_todos_menos_el_socket_actual", data => {
-    console.log(data);
-});
+    socket.broadcast.emit("mensaje-bienvenida", "¡Bienvenido al chat!");
 
-socket.on("evento_para_todos", data => {
-    console.log(data);
+    clientSocket.emit("mensaje-personalizado", "¡Hola! ¿Cómo estás?");
 });
