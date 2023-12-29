@@ -46,6 +46,21 @@ router.get(`/:cid`, async (req,res) =>{
     })
 });
 
+//carrito
+router.get("/carts/:cid", async (req, res) => {
+  
+  const cartId = req.params.cid;
+  const cart = await cartManagerMongo.findById(cartId);
+
+  if (!cart) {
+    return res.status(404).send("Carrito no encontrado");
+  }
+
+  const products = await cart.getProducts();
+
+  res.render("cart", { products });
+});
+
 //POST
 router.post(`/`, async (req,res) =>{
 

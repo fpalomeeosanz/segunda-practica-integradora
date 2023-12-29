@@ -2,11 +2,11 @@ import { Router } from "express";
 import userModel from "../dao/models/user.model.js";
 import { uploader } from "../utils.js";
 
-
 const router = Router();
+
 //get general
 router.get("/", async (res,res) =>{
-    //por conectar a BD
+    
     const users = await userModel.find();
 
     res.send({
