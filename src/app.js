@@ -8,6 +8,7 @@ import userRoutes from "./routes/users.routes.js";
 import { viewRouter } from "./routes/views.routes.js";
 import { cartRouter } from "./routes/cart.routes.js";
 import { productRouter } from "./routes/product.routes.js";
+import { authRouter } from "./routes/auth.routes.js";
 
 const MONGO = "mongodb+srv://fpalomerosanz:fpalomerosanz@cluster0.xx4eski.mongodb.net/PracticaIntegradora";
 const connection = mongoose.connect(MONGO);
@@ -31,7 +32,9 @@ app.use(express.static(`${__dirname}/public`));
 
 
 app.use("/", viewRouter);
+app.use("/auth", authRouter);
 app.use("/api/users", userRoutes);
-app.use("api/carts", cartRouter);
-app.use("api/products", productRouter);
+app.use("/api/carts", cartRouter);
+app.use("/api/products", productRouter);
+
 

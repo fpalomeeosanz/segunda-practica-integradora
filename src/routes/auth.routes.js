@@ -1,5 +1,4 @@
 import { Router } from "express";
-import mongoose from "mongoose";
 import userModel from "../dao/models/user.model";
 
 const router = Router();
