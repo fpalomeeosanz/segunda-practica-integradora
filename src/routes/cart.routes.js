@@ -46,7 +46,7 @@ router.get(`/:cid`, async (req,res) =>{
     })
 });
 
-//carrito
+//CARRITO
 router.get("/carts/:cid", async (req, res) => {
   
   const cartId = req.params.cid;
