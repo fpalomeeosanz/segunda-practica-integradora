@@ -1,6 +1,6 @@
 import passport from "passport";
-import GitHubStrategy from "passport-github2";
 import userModel from "../src/dao/models/user.model.js";
+import currentStrategy from "../strategy.current.js";
 
 const InitializePassport = () => {
 
@@ -12,6 +12,9 @@ const InitializePassport = () => {
         let user = await userModel.findById(id);
         done(null, user);
     });
-}
+
+    passport.use(currentStrategy);
+};
 
 export default InitializePassport;
+

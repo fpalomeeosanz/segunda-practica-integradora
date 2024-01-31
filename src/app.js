@@ -57,18 +57,14 @@ app.get(`/current`, authToken, (req,res) => {
     res.send({status:"success", payload:req.user});
 })
 
-
 const httpServer = app.listen(PORT, () =>{
     console.log(`Servidor funcionado en el puerto:${PORT}`);
 })
-
  
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 app.use(express.static(`${__dirname}/public`));
-
-
 
 app.use("/", viewRouter);
 app.use("/auth", authRouter);
@@ -78,8 +74,10 @@ app.use("/api/products", productRouter);
 
 InitializePassport();
 app.use(session({
-    secret: "56881637e9a2a221631a807f39594c71724c73af" //mismo de github
+    secret: "56881637e9a2a221631a807f39594c71724c73af" 
 }));
 app.use(passport.initialize());
-app.use("/api/sessions", sessionsRouter)
+app.use("/api/sessions", sessionsRouter);
+
+
 
