@@ -3,7 +3,7 @@ import LocalStrategy  from "passport-local";
 import { createHash, isValidPassword } from "../src/utils.js";
 
 export const initializePassport = ()=>{
-    //Estrategia de registro
+    
     passport.use("signupStrategy", new LocalStrategy(
         {
             usernameField:"email",
@@ -21,7 +21,7 @@ export const initializePassport = ()=>{
                 if (username.endsWith("@coder.com")) {
                     rol = "admin";
                 }
-                //si no existe el usuario lo registramos
+               
                 const newUser = {
                     name,
                     email:username,
@@ -36,7 +36,6 @@ export const initializePassport = ()=>{
         }
     ));
 
-    //estrategia de login con passport-local
     passport.use("loginStrategy", new LocalStrategy(
         {
             usernameField:"email"
@@ -47,7 +46,6 @@ export const initializePassport = ()=>{
                 if(!user){
                     return done(null, false);
                 }
-                //usuario existe, validar contraseña
                 if(!isValidPassword(password, user)) return done(null, false);
                 return done(null, user);
             } catch (error) {
@@ -56,13 +54,12 @@ export const initializePassport = ()=>{
         }
     ));
 
-    //serializacion y deserializacion
     passport.serializeUser((user,done)=>{
         done(null,user._id)
-    });//sesion {cookie, passport:user:id}
+    });
 
     passport.deserializeUser(async(id,done)=>{
         const userDB = await UserModel.findById(id);
         done(null, userDB)
-    });//req.user = userDB
+    });
 }
