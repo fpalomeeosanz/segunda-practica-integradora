@@ -1,63 +1,37 @@
 import { Router } from "express";
-import userModel from "../dao/models/user.model.js";
-import { generateToken } from "../JWT.utils.js";
+import passport from "passport";
 
 const router = Router();
 
-//POST REG
-router.post("/register", (req, res) => {
-    
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password) {
-        return res.status(400).send("Debes proporcionar todos los datos necesarios");
-    }
-
-    
-    const user = new userModel({
-        username,
-        email,
-        password,
-    });
-
-    
-    user.save((err) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-
-        res.redirect("/");
-    });
+router.post("/signup", passport.authenticate("signupStrategy",{
+    failureRedirect:"/api/sessions/failure-signup"
+}), (req,res)=>{
+    res.send("registro exitoso")
 });
 
-//GET LOGOUT
-router.get("/logout", (req, res) => {
-    
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
+router.get("/failure-signup", (req,res)=>{
+    res.send(`<div>Error al registrar al usuario, <a href="/signup">Intente de nuevo</a></div>`);
+});
 
-        res.redirect("/");
+router.post("/login", passport.authenticate("loginStrategy",{
+    failureRedirect:"/api/sessions/failure-login"
+}), (req,res)=>{
+    res.send("login exitoso")
+});
+
+router.get("/failure-login", (req,res)=>{
+    res.send(`<div>Error al loguear al usuario, <a href="/login">Intente de nuevo</a></div>`);
+});
+
+router.post("/logout",(req,res)=>{
+    req.session.destroy((err)=>{
+        if(err) return res.json({status:"error", message:"no se pudo cerrar la sesión"});
+        res.json({status:"success", message:"sesion finalizada"});
     });
 });
 
-//POST LOGIN
-router.post("/login", (req, res) => {
-    
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).send("Hola! Escribe todos los datos necesarios para iniciar sesión.");
-    }
-
-    const user = userModel.findOne({ username }); 
-    if (!user || user.password !== password || user.role !== "admin") {
-        return res.status(401).send("Credenciales incorrectas");
-    }
-
-    req.session.user = user._id;
-
-    res.redirect("/products");
+router.get("/profile", (req,res)=>{
+    res.send(req.user);
 });
 
-export { router as authRouter }
+export { router as authRouter };
