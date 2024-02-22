@@ -1,26 +1,21 @@
-import passport from "passport";
-import cookieExtractor from "passport-cookie";
-import userModel from "../src/dao/models/user.model.js";
+import { Strategy as CookieStrategy } from "passport-cookie";
+import userModel from "./src/dao/models/user.model.js";
 
-const currentStrategy = new passport.Strategy({
-    
-    name: "current",
-    extractor: cookieExtractor({
-        name: "token",
-    }),
-
-    validate: async (token, done) => {
-        
-        const user = await userModel.findOne({
-            token,
-        });
-
-        if (!user) {
-            return done(new Error("El token no es válido"));
-        }
-        
-        return done(null, user);
-    },
-});
+const currentStrategy = new CookieStrategy(
+  {
+    cookieName: "token",
+  },
+  async (token, done) => {
+    try {
+      const user = await userModel.findOne({ token });
+      if (!user) {
+        return done(new Error("Invalid token"));
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  }
+);
 
 export default currentStrategy;

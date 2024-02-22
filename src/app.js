@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import handlebars  from "express-handlebars";
 
-import __dirname from "./utils.js";
+import  { __dirname }  from "./utils.js";
 
 import userRoutes from "./routes/users.routes.js";
 import { viewRouter } from "./routes/views.routes.js";
@@ -12,22 +12,29 @@ import { authRouter } from "./routes/auth.routes.js";
 import { sessionsRouter } from "./routes/sessions.routes.js";
 
 import passport from "passport";
-import InitializePassport from "../config/passport.config.js";
+import { initializePassport } from "../config/passport.config.js";
 import session from "express-session";
 
-import { generateToken, authToken } from "../JWT.utils.js"
+import MongoStore from "connect-mongo";
+import { options } from "../config/config.js";
+import  dotenv  from "dotenv";
+import { generateToken, authToken } from "./JWT.utils.js"
 
-const MONGO = "mongodb+srv://fpalomerosanz:fpalomerosanz@cluster0.xx4eski.mongodb.net/PracticaIntegradora";
-const connection = mongoose.connect(MONGO);
+const users = [];
 
-const PORT = 8080;
+dotenv.config();
+
+const MONGO = process.env.MONGO;
+const connection = mongoose.connect(MONGO).then(() => console.log("MongoDB connected successfully!"))
+.catch((err) => console.error("MongoDB connection error:", err));
+
+const PORT = options.server.port;
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-const PRIVATE_KEY = "KEY_TestPalomeroJWT";
-const users = [];
+
 
 app.post(`/register`, (req,res) => {
 
@@ -72,10 +79,17 @@ app.use("/api/users", userRoutes);
 app.use("/api/carts", cartRouter);
 app.use("/api/products", productRouter);
 
-InitializePassport();
+initializePassport();
 app.use(session({
-    secret: "56881637e9a2a221631a807f39594c71724c73af" 
+    store: MongoStore.create({
+        mongoUrl: options.mongo.url
+    }),
+    secret:"fpalomerosanz",
+    resave:false,
+    saveUninitialized:false
 }));
+
+
 app.use(passport.initialize());
 app.use("/api/sessions", sessionsRouter);
 

@@ -1,20 +1,68 @@
 import passport from "passport";
-import userModel from "../src/dao/models/user.model.js";
-import currentStrategy from "../strategy.current.js";
+import LocalStrategy  from "passport-local";
+import { createHash, isValidPassword } from "../src/utils.js";
 
-const InitializePassport = () => {
+export const initializePassport = ()=>{
+    //Estrategia de registro
+    passport.use("signupStrategy", new LocalStrategy(
+        {
+            usernameField:"email",
+            passReqToCallback:true
+        },
+        async(req,username,password,done)=>{
+            try {
+                const {name} = req.body;
+                const user = await UserModel.findOne({email:username});
+                if(user){
+                    return done(null,false)
+                }
+                //crear el usuario
+                let rol='user';
+                if (username.endsWith("@coder.com")) {
+                    rol = "admin";
+                }
+                //si no existe el usuario lo registramos
+                const newUser = {
+                    name,
+                    email:username,
+                    password:createHash(password),
+                    rol
+                };
+                const userCreated = await UserModel.create(newUser);
+                return done(null,userCreated)
+            } catch (error) {
+                return done(error);
+            }
+        }
+    ));
 
-    passport.serializeUser((user, done) => {
-        done(null, user._id);
-    });
+    //estrategia de login con passport-local
+    passport.use("loginStrategy", new LocalStrategy(
+        {
+            usernameField:"email"
+        },
+        async (username, password, done)=>{
+            try {
+                const user = await UserModel.findOne({email:username});
+                if(!user){
+                    return done(null, false);
+                }
+                //usuario existe, validar contraseña
+                if(!isValidPassword(password, user)) return done(null, false);
+                return done(null, user);
+            } catch (error) {
+                return done(error);
+            }
+        }
+    ));
 
-    passport.deserializeUser(async (id, done) => {
-        let user = await userModel.findById(id);
-        done(null, user);
-    });
+    //serializacion y deserializacion
+    passport.serializeUser((user,done)=>{
+        done(null,user._id)
+    });//sesion {cookie, passport:user:id}
 
-    passport.use(currentStrategy);
-};
-
-export default InitializePassport;
-
+    passport.deserializeUser(async(id,done)=>{
+        const userDB = await UserModel.findById(id);
+        done(null, userDB)
+    });//req.user = userDB
+}

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import userModel from "../dao/models/user.model.js";
+import { generateToken } from "../JWT.utils.js";
 
 const router = Router();
 

@@ -19,4 +19,4 @@ const authToken = (req,res,next) => {
         next();
     })
 }
- export { generateToken, authToken } 
+export { generateToken, authToken } 
